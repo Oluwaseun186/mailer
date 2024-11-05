@@ -51,6 +51,7 @@ jobs:
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: $username/$image_name:$version
+          cache-dir: /tmp/trivy-cache
 
       - name: Run Tests
         run: |
