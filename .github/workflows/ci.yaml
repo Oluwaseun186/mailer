@@ -50,7 +50,7 @@ jobs:
       - name: Scan Docker Image for Vulnerabilities
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ secrets.DOCKERHUB_USERNAME }}/app_test_image:1.0.0
+          image-ref: $username/$image_name:$version
 
       - name: Run Tests
         run: |
