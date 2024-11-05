@@ -68,7 +68,7 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
-      - name: "Logs into Docker Hub Account"
+      - name: "Logs into Docker Hub Account!"
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
