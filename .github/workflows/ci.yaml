@@ -6,12 +6,15 @@ on:
       - origin
 
 jobs: 
-  build:
+  Build:
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
+    - name: greeting
+      run: echo "Hello World users"  
 
     - name: Set up Node.js
       uses: actions/setup-node@v2
@@ -19,14 +22,11 @@ jobs:
         node-version: 20
 
     - name: Install Dependencies
-      run: npm install
-
-    - name: Hello World 
-      run: echo "Welcome users!"
+      run: npm Install
 
     - name: Build Docker Image
       env:
-        image_name: test-image
+        image_name: app_test_image
         version: 1.0.0
         username: oluwaseun7
       run: |
@@ -40,7 +40,7 @@ jobs:
 
     - name: Push Docker Image to Docker Hub
       env:
-        image_name: test-image
+        image_name: app_test_image
         version: 1.0.0
         username: oluwaseun7
       run: |
@@ -60,3 +60,24 @@ jobs:
       run: |
         echo run test
         npm test || { echo 'Tests failed'; exit 1; }
+
+  Deploy:
+    name: Deploy Docker Image
+    runs-on: ubuntu-latest
+    needs: Build
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+      - name: "Logs into Docker Hub Account"
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Pull and Deploy Docker Image
+        env:
+          image_name: test-image # Image name variable
+          version: 1.0.0 # Image version variable
+          username: oluwaseun7
+        run: |
+          docker pull $username/$image_name:$version
+          docker run -d -p 808:80 $username/$image_name:$version
