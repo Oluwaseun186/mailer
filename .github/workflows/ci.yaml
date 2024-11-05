@@ -47,17 +47,14 @@ jobs:
         run: |
           docker push $username/$image_name:$version
 
-      - name: Cache Trivy DB
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/trivy
-          key: ${{ runner.os }}-trivy-db
-          restore-keys: ${{ runner.os }}-trivy-db
+      - name: Install Trivy
+        run: |
+            wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.57.0_Linux-64bit.deb
+            sudo dpkg -i trivy_0.57.0_Linux-64bit.deb
+
       - name: Scan Docker Image for Vulnerabilities
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: $username/$image_name:$version
-          cache-dir: /tmp/trivy-cache
+        run: |
+          trivy image --exit-code 1 --severity HIGH,CRITICAL ${{ secrets.DOCKERHUB_USERNAME }}/app_test_image:1.0.0
 
       - name: Run Tests
         run: |
