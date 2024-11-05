@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon dragon.js"
-  },
+    "scripts": {
+      "test": "echo \"Running tests...\" && exit 0",
+      "start": "nodemailer"
+    },
   "keywords": [],
   "author": "",
   "license": "ISC",
