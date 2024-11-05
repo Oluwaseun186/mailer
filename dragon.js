@@ -57,11 +57,7 @@ server.post("/send_email", (request, response) => {
     //send the email
     dragonmailer.sendMail(mailOptions, (error, info) => {
             if(error) throw error;
-
             console.log("Email sent: ", info.response);
-
-
-
             response.send({
                 message:"your email was sent successfully ",
                 data: {
@@ -77,13 +73,6 @@ server.post("/send_email", (request, response) => {
 
 
 })
-
-
-
-
-
-
-
 
 //listening
 server.listen(serverConfig.port, serverConfig.hostname, () => console.log(`Dragon server is running on ${serverConfig.hostname}:${serverConfig.port}`));
