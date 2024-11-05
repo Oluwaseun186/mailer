@@ -38,7 +38,7 @@ jobs:
       run: |
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/test-image:1.0.0
 
-    - name: Install Trivy
+    - name: install Trivy
       run: |
         sudo apt-get install -y wget
         wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.57.0_Linux-64bit.deb
@@ -50,5 +50,5 @@ jobs:
 
     - name: Run Tests
       run: |
-        echo "Running tests..."
+        echo run test
         npm test || { echo 'Tests failed'; exit 1; }

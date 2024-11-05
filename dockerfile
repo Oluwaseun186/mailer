@@ -1,16 +1,6 @@
+FROM nginx:alpine
 
-FROM node:alpine3.20
+WORKDIR /usr/share/html
 
+COPY . /usr/share/nginx/html
 
-WORKDIR /app
-
-
-COPY . .
-
-
-RUN npm install
-
-
-EXPOSE 3000
-
-CMD ["npm", "run", "start"]
