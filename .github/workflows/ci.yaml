@@ -48,14 +48,16 @@ jobs:
           docker push $username/$image_name:$version
 
       - name: Install Trivy
+        env:
+          image_name: app_test_image
+          version: 1.0.0
+          username: oluwaseun7
         run: |
             wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.57.0_Linux-64bit.deb
             sudo dpkg -i trivy_0.57.0_Linux-64bit.deb
-
       - name: Scan Docker Image for Vulnerabilities
         run: |
-          trivy image --exit-code 1 --severity HIGH,CRITICAL ${{ secrets.DOCKERHUB_USERNAME }}/app_test_image:1.0.0
-
+          trivy image --exit-code 1 --severity HIGH,CRITICAL $username/$image_name:$version
       - name: Run Tests
         run: |
           echo "Running tests..."
