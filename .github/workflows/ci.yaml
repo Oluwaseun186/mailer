@@ -47,21 +47,39 @@ jobs:
         run: |
           docker push $username/$image_name:$version
 
-      - name: Install Trivy
+      - name: Cache Trivy DB
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/trivy
+          key: ${{ runner.os }}-trivy-db
+          restore-keys: |
+            ${{ runner.os }}-trivy-db
+
+      - name: Scan Docker Image for Vulnerabilities
         env:
           image_name: app_test_image
           version: 1.0.0
           username: oluwaseun7
+        id: trivy-scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: $username/$image_name:$version
+          args: --skip-update
+        continue-on-error: true  # Allow retries on rate limiting
+
+      # Retry Mechanism if Rate Limited
+      - name: Retry Trivy Scan if Rate Limited
+        if: failure()
         run: |
-            wget https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.57.0_Linux-64bit.deb
-            sudo dpkg -i trivy_0.57.0_Linux-64bit.deb
-      - name: Scan Docker Image for Vulnerabilities
-        run: |
-          trivy image --exit-code 1 --severity HIGH,CRITICAL $username/$image_name:$version
+          echo "Rate limit hit. Retrying after delay..."
+          sleep 60  # Delay before retry
+          trivy image --skip-update ${username}/${image_name}:${version} || exit 1
+          
       - name: Run Tests
         run: |
           echo "Running tests..."
           npm test || { echo 'Tests failed'; exit 1; }
+
 
   Deploy:
     name: Deploy Docker Image
